@@ -1,8 +1,33 @@
-Welcome to Superstes WIKI
-=========================
+**************
+Superstes Wiki
+**************
 
-Open Source knowledge for everyone.
+Knowledge for everyone.
+
+
+IT-Infrastructure
+#################
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :glob:
+   :maxdepth: 1
+
+   1/infra/*
+
+Network
+#######
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+
+   1/network/*
+
+Coding
+######
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+
+   1/code/*
