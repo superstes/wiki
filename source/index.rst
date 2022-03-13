@@ -9,25 +9,22 @@ IT-Infrastructure
 #################
 
 .. toctree::
-   :glob:
-   :maxdepth: 1
+   :maxdepth: 2
 
-   1/infra/*
+   index_infra
 
 Network
 #######
 
 .. toctree::
-   :glob:
-   :maxdepth: 1
+   :maxdepth: 2
 
-   1/network/*
+   index_network
 
 Coding
 ######
 
 .. toctree::
-   :glob:
-   :maxdepth: 1
+   :maxdepth: 2
 
-   1/code/*
+   index_code

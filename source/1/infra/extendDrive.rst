@@ -40,14 +40,14 @@ We need to go through these steps:
         => number of partition to increase
         # re-create the partition, but bigger
         n
-        => enter or choose custom parition number
+        => enter or choose custom partition number
         => enter
         => enter
         => remove the Signature?
-        Y
-        # modify parition type
+        n  # else your LVM config will be gone
+        # modify partition type
         t
-        30  # for LVM disk
+        8e  # for LVM disk
         # verify
         p
         # save and write
@@ -71,7 +71,7 @@ We need to go through these steps:
 
         lvextend /dev/vg0/lv1 -L 20GB
 
-#. Update the parition size
+#. Update the partition size
 
     .. code-block:: bash
 
