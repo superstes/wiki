@@ -1,5 +1,9 @@
+from datetime import datetime
+
+# pylint: disable=W0622
+
 project = 'Superstes WIKI'
-copyright = '2022, Superstes'
+copyright = f'{datetime.now().year}, Superstes'
 author = 'Superstes'
 extensions = ['sphinx_rtd_theme']
 templates_path = ['_templates']
