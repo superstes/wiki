@@ -1,3 +1,8 @@
+.. _main_sub
+
+.. include:: ../../_inc/head.rst
+
+
 *****
 Title
 *****

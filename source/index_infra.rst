@@ -1,3 +1,5 @@
+.. include:: _inc/head.rst
+
 #################
 IT-Infrastructure
 #################

@@ -1,3 +1,6 @@
+.. _infra_lvm
+
+.. include:: ../../_inc/head.rst
 
 .. |lvm| image:: ../../_static/img/infra/lvm.svg
    :class: wiki-img

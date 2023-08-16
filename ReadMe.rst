@@ -7,6 +7,8 @@
 Superstes Wiki
 ##############
 
+Wiki: `wiki.superstes.eu <https://wiki.superstes.eu>`_
+
 I love learning new stuff and think that information is one of the most precious things in the world right now.
 
 Therefore - I **want to share some knowledge** I gathered over the course of my years.

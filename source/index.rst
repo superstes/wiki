@@ -1,3 +1,6 @@
+.. include:: _inc/head.rst
+
+
 **************
 Superstes Wiki
 **************

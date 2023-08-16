@@ -1,3 +1,8 @@
+.. _net_squid
+
+.. include:: ../../_inc/head.rst
+
+
 ***********
 Squid Proxy
 ***********

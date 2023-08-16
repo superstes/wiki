@@ -1,3 +1,7 @@
+.. _net_nftables
+
+.. include:: ../../_inc/head.rst
+
 .. |nft_flow| image:: ../../_static/img/network/nftables_flow.png
    :class: wiki-img-img
 

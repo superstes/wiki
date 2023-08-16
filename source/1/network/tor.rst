@@ -1,3 +1,8 @@
+.. _net_tor
+
+.. include:: ../../_inc/head.rst
+
+
 ***
 Tor
 ***
