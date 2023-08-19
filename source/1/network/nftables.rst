@@ -110,6 +110,7 @@ Config File
 NFTables can be completely configured from one or more config files.
 
 Most times you might want to use:
+
 * a main config file: '/etc/nftables.conf'
 * a configuration directory to include further files: '/etc/nft.conf.d/'
 
@@ -175,19 +176,69 @@ Config
 
 ----
 
+Service
+#######
+
+To keep invalid configuration from stopping/failing your `nftables.service` - you can add a config-validation in it:
+
+.. code-block:: text
+
+    # /etc/systemd/system/nftables.service.d/override.conf
+
+    [Service]
+    ExecStartPre=/usr/sbin/nft -cf /etc/nftables.conf
+
+    ExecReload=
+    ExecReload=/usr/sbin/nft -cf /etc/nftables.conf
+    ExecReload=/usr/sbin/nft -f /etc/nftables.conf
+
+    Restart=always
+    RestartSec=5s
+
+This will catch and log config-errors before doing a reload/restart.
+
+When doing a system-reboot it will still fail if your config is bad.
+
+----
+
 Addons
 ######
+
+NFTables lacks some functionality, that is commonly used in firewalling.
+
+You can add a scheduled scripts that add these functionalities to NFTables!
 
 See: `Ansible-managed addons <https://github.com/ansibleguy/addons_nftables>`_
 
 DNS
 ***
 
+It is nice to have variables that hold the IPs of some DNS-record.
+
+NFTables CAN resolve DNS-records - but will throw an error if the record resolves to more than one IP.. (Error: Hostname resolves to multiple addresses)
+
+See: `NFTables Addon DNS <https://github.com/superstes/nftables_addon_dns>`_
+
 IPLists
 *******
 
+This addon was inspired by `the same functionality provided on OPNSense <https://docs.opnsense.org/manual/how-tos/edrop.html#configure-spamhaus-e-drop>`_
+
+It will download existing IPLists and add them as NFTables variables.
+
+IPList examples:
+
+* `Spamhaus DROP <https://www.spamhaus.org/drop/drop.txt>`_
+* `Spamhaus EDROP <https://www.spamhaus.org/drop/edrop.txt>`_
+* `Tor exit nodes <https://check.torproject.org/torbulkexitlist>`_
+
+See: `NFTables Addon IPList <https://github.com/superstes/nftables_addon_iplist>`_
+
 Failover
 ********
+
+See: `NFTables Addon Failover <https://github.com/superstes/nftables_addon_failover>`_
+
 
 ----
 
