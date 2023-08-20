@@ -80,7 +80,7 @@ Like mode 'http_mode' but the HTTP-CONNECT tunnel is wrapped in TLS.
 
 Usual port 3129 is used for this mode.
 
-For the proxy to be able to handle the DNS resolution - **ssl-bump** must be configured. Else the proxy will not be able to read the **S**erver-**N**ame-**I**dentifier used in the TLS handshake.
+For the proxy to be able to handle the DNS resolution - **ssl-bump** must be configured. Else the proxy will not be able to read the Server-Name-Identifier used in the TLS handshake.
 
 INTERCEPT
 *********
