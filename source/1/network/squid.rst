@@ -104,14 +104,14 @@ By *peaking* at TLS handshake information in ssl-bump step-1 we are able to gain
 
 * target DNS/hostname from SNI
 
-Benefits:
+**Benefits:**
 
 * less performance needed than full ssl-interception
 * faster than full ssl-interception
 * less problems with applications that check certificates on their end (*p.e. banking*)
 * no need to create/manage an internal Sub-CA to dynamically create and sign certificates for ssl-intercepted targets
 
-**Drawbacks**:
+**Drawbacks:**
 
 * less options to filter the traffic on
 * connections to *trustable* targets could carry dangerous payloads
@@ -124,13 +124,13 @@ INTERCEPT
 
 This one will be used in **zero-trust** environments.
 
-**Benefits**:
+**Benefits:**
 
 * ssl-interception gives us much information that can be used to run IPS/IDS checks on
 * possible dangerous payloads like downloads can be checked by anti-virus
 * more restrictions make even interactive attacks harder to
 
-**Drawbacks**:
+**Drawbacks:**
 
 * complex ruleset if you go with an *implicit-deny* approach
 * much more performance needed
@@ -300,7 +300,7 @@ Here are some examples that **DO NOT WORK**
 
 * IPTables/NFTables TPROXY to `socat forwarder <https://manpages.debian.org/unstable/socat/socat.1.en.html>`_
 
-  SOCat is actually correctly receiving and forwarding the traffic - BUT it seems to perform a DNAT operation in the background
+  SOCat is actually correctly receiving and forwarding the traffic - BUT practically it acts like a DNAT operation
 
   .. code-block:: bash
 

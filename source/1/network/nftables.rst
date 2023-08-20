@@ -254,11 +254,19 @@ We need to route it to 'loopback' so it passes through 'prerouting'.
 
 |nft_tproxy|
 
-**LOCAL TARGET CHALLENGE:**
+**REMOTE PROXY CHALLENGE:**
 
 You might want to target a remote proxy server. This does not work with this operation on its own.
 
-One can use a tool like :ref:`GOST as forwarder <net_gost>`:
+One can use a tool like :ref:`GOST as forwarder <net_gost>`!
+
+With a tool like that you can wrap the plain traffic received from TPROXY and forward or tunnel it.
+
+I personally like this solution:
+
+.. code-block:: text
+
+    NFTables =TCP=> TPROXY (gost @ 127.0.0.1) =HTTP[TCP]=> PROXY (squid http_port)
 
 
 Examples
