@@ -63,7 +63,7 @@ Modes
 ----
 
 HTTP_PORT
-=========
+*********
 
 The 'http_port' mode can be used as target proxy in applications like browsers.
 
@@ -74,7 +74,7 @@ The application creates a HTTP-CONNECT tunnel to the proxy and wraps its request
 DNS resolution is done by the proxy.
 
 HTTPS_PORT
-==========
+**********
 
 Like mode 'http_mode' but the HTTP-CONNECT tunnel is wrapped in TLS.
 
@@ -83,14 +83,14 @@ Usual port 3129 is used for this mode.
 For the proxy to be able to handle the DNS resolution - **ssl-bump** must be configured. Else the proxy will not be able to read the **S**erver-**N**ame-**I**dentifier used in the TLS handshake.
 
 INTERCEPT
-=========
+*********
 
 In this mode the proxy will expect the plain traffic to arrive.
 
 You will have to create a dedicated listener with **ssl-bump** enabled if you want to handle TLS traffic.
 
 SSL-BUMP
-========
+********
 
 SSL-BUMP allows us to:
 * read TLS handshake information
@@ -98,7 +98,7 @@ SSL-BUMP allows us to:
 * check server certificates for issues (*expired, untrusted*)
 
 PEAK
-----
+====
 
 By *peaking* at TLS handshake information in ssl-bump step-1 we are able to gain some important information:
 
@@ -120,7 +120,7 @@ In some cases a basic DNS 'allow-list' will be enough to ensure good security. M
 
 
 INTERCEPT
----------
+=========
 
 This one will be used in **zero-trust** environments.
 
@@ -140,7 +140,7 @@ This one will be used in **zero-trust** environments.
 ----
 
 TPROXY
-======
+******
 
 TProxy is a functionality built into current kernels.
 
@@ -156,14 +156,16 @@ In both implementations this is how we will need to handle the three main traffi
 
 Why do we need to send 'output' traffic to loopback? Because TPROXY is only available in the 'prerouting-filter' chain and 'output' traffic does not hit that one by default.
 
-IPTables
---------
-
-
 NFTables
---------
+========
 
-See: :ref:`NFTables TProxy <net_nftables_tproxy>`_
+See: :ref:`NFTables TProxy <net_nftables_tproxy>`
+
+
+IPTables
+========
+
+See: `IPTables TPROXY <https://gist.github.com/superstes/c4fefbf403f61812abf89165d7bc4000>`_
 
 ----
 
@@ -254,7 +256,7 @@ Practical examples of this:
 * A Cloud VPS or Root Server that is only connected to WAN
 * Distributed Systems using a central proxy (*p.e. on-site at customers*)
 
-In this case we might need other tools like :ref:`GOST <net_gost>`_ to act as forwarder:
+In this case we might need other tools like :ref:`GOST <net_gost>` to act as forwarder:
 
 
 .. code-block:: text

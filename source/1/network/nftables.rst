@@ -258,7 +258,7 @@ We need to route it to 'loopback' so it passes through 'prerouting'.
 
 You might want to target a remote proxy server. This does not work with this operation on its own.
 
-One can use a tool like :ref:`GOST as forwarder <net_gost>`_:
+One can use a tool like :ref:`GOST as forwarder <net_gost>`:
 
 
 Examples
