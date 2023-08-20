@@ -8,6 +8,9 @@
 .. |nft_hooks| image:: ../../_static/img/network/nftables_hooks.png
    :class: wiki-img-img
 
+.. |nft_tproxy| image:: ../../_static/img/network/nftables_tproxy.png
+   :class: wiki-img-img
+
 ********
 NFTables
 ********
@@ -170,9 +173,99 @@ See: `NFTables Ansible-Role <https://github.com/ansibleguy/infra_nftables/blob/l
 
 ----
 
+Troubleshooting
+###############
+
+Trace
+*****
+
+You can trace traffic that flows through you chains.
+
+You may want to start the trace at the point where the traffic enters.
+
+Example for output traffic:
+
+
+Example for input traffic:
+
+
+Translate IPTables
+******************
+
+Most times the behaviour of IPTables and NFTables is pretty much the same.
+
+In some Distributions the default IPTables backend is already migrated to NFTables.
+
+**Why translate from IPTables?**
+
+There are 1000x more resources related to IPTables out there that might help you get things working.
+
+**I would recommend:**
+
+* having a blank VM to test IPTables ruleset
+* save the working minimal-ruleset 'iptables-save > /etc/iptables/rules.ipt'
+* translate the ruleset to nftables 'iptables-restore-translate -f /etc/iptables/rules.ipt > /etc/iptables/rules.nft'
+* test the NFTables ruleset and remove the default chains you don't need (*IPTables is a little more messy with its defaults*)
+
+BTW: one can also restore IPTables rules by using 'iptables-restore < /etc/iptables/rules.ipt'
+
+----
+
 Config
 ######
 
+.. _net_nftables_tproxy
+
+TPROXY
+******
+
+Quote from the `tproxy kernel docs <https://docs.kernel.org/networking/tproxy.html>`_:
+
+::
+
+    Transparent proxying often involves "intercepting" traffic on a router.
+    This is usually done with the iptables REDIRECT target; however, there are serious limitations of that method.
+    One of the major issues is that it actually modifies the packets to change the destination address -- which might not be acceptable in certain situations. (Think of proxying UDP for example: you won't be able to find out the original destination address. Even in case of TCP getting the original destination address is racy.)
+    The 'TPROXY' target provides similar functionality without relying on NAT.
+
+
+This functionality allows us to send traffic to an userspace process and read/modify it.
+
+This can **enable powerful solutions**! Per example see: `blog.cloudflare.com - Abusing Linux's firewall <https://blog.cloudflare.com/how-we-built-spectrum/>`_
+
+.. warning::
+
+    TPROXY seems to only support local targets.
+
+    As one can see in the kernel sources - there is a check if the target port is in use: `nft_tproxy.c <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/netfilter/nft_tproxy.c#n64>`_
+
+Usage
+-----
+
+One thing you'll need to know: The TPROXY operation can only be used in the **prerouting - filter (mangle)** chain!
+
+Traffic that passes this chain/hook by default can easily be proxied.
+
+**OUTPUT CHALLENGE:**
+
+Because of this - traffic that enters at the 'output' (*originating from the same host*) chain/hook can not be redirected directly.
+
+We need to route it to 'loopback' so it passes through 'prerouting'.
+
+|nft_tproxy|
+
+**LOCAL TARGET CHALLENGE:**
+
+You might want to target a remote proxy server. This does not work with this operation on its own.
+
+One can use a tool like :ref:`GOST as forwarder <net_gost>`_:
+
+
+Examples
+--------
+
+* `NFTables TPROXY example <https://gist.github.com/superstes/6b7ed764482e4a8a75334f269493ac2e>`_
+* `IPTables TPROXY example <https://gist.github.com/superstes/c4fefbf403f61812abf89165d7bc4000>`_
 
 ----
 
@@ -192,7 +285,7 @@ To keep invalid configuration from stopping/failing your `nftables.service` - yo
     ExecReload=/usr/sbin/nft -cf /etc/nftables.conf
     ExecReload=/usr/sbin/nft -f /etc/nftables.conf
 
-    Restart=always
+    Restart=on-failure
     RestartSec=5s
 
 This will catch and log config-errors before doing a reload/restart.
