@@ -1,4 +1,4 @@
-.. _net_squid
+.. _net_squid:
 
 .. include:: ../../_inc/head.rst
 

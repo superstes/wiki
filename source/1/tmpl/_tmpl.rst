@@ -1,4 +1,4 @@
-.. _main_sub
+.. _main_sub:
 
 .. include:: ../../_inc/head.rst
 

@@ -1,4 +1,4 @@
-.. _net_nftables
+.. _net_nftables:
 
 .. include:: ../../_inc/head.rst
 
@@ -214,7 +214,7 @@ BTW: one can also restore IPTables rules by using 'iptables-restore < /etc/iptab
 Config
 ######
 
-.. _net_nftables_tproxy
+.. _net_nftables_tproxy:
 
 TPROXY
 ******

@@ -1,4 +1,4 @@
-.. _net_gost
+.. _net_gost:
 
 .. include:: ../../_inc/head.rst
 

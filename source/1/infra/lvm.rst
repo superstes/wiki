@@ -1,4 +1,4 @@
-.. _infra_lvm
+.. _infra_lvm:
 
 .. include:: ../../_inc/head.rst
 
