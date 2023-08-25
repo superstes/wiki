@@ -2,6 +2,8 @@
 
 .. include:: ../../_inc/head.rst
 
+.. |squid_remote| image:: ../../_static/img/network/squid_remote.png
+   :class: wiki-img-img
 
 ***********
 Squid Proxy
@@ -325,6 +327,8 @@ Examples
 
 Transparent Proxy
 *****************
+
+|squid_remote|
 
 Destination NAT
 ===============

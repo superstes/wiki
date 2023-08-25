@@ -252,13 +252,18 @@ Because of this - traffic that enters at the 'output' (*originating from the sam
 
 We need to route it to 'loopback' so it passes through 'prerouting'.
 
+NOTE: This image shows the problem we are facing in a very abstract way. It might not display the traffic-flow in a correct manner!
+
 |nft_tproxy|
+
 
 **REMOTE PROXY CHALLENGE:**
 
 You might want to target a remote proxy server. This does not work with this operation on its own.
 
-One can use a tool like :ref:`GOST as forwarder <net_gost>`!
+One would need to use a proxy-forwarder tool that can handle this for you.
+
+I've patched a existing tool for exactly this purpose: `proxy_forwarder <https://github.com/superstes/proxy-forwarder>`_
 
 With a tool like that you can wrap the plain traffic received from TPROXY and forward or tunnel it.
 
