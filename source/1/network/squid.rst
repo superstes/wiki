@@ -44,10 +44,10 @@ If you are only 'peaking' at SSL connections - this should be enough:
 
     sudo apt install squid-openssl  # the package needs to have ssl-support enabled at compile-time
 
-    openssl dhparam -outform PEM -out /etc/squid/bump.dh.pem 2048
+    openssl dhparam -outform PEM -out /etc/squid/ssl_bump.dh.pem 2048
 
     # openssl create self-signed cert
-    openssl req -x509 -newkey rsa:4096 -keyout /etc/squid/bump.key -out /etc/squid/bump.crt -sha256 -days 3650 -nodes -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=Forward Proxy"
+    openssl req -x509 -newkey rsa:4096 -keyout /etc/squid/ssl_bump.key -out /etc/squid/ssl_bump.crt -sha256 -days 3650 -nodes -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=Forward Proxy"
 
     # create ssl cache DB
     mkdir -p /var/lib/squid
@@ -89,13 +89,18 @@ In this mode the proxy will expect the plain traffic to arrive.
 
 You will have to create a dedicated listener with **ssl-bump** enabled if you want to handle TLS traffic.
 
+See also:
+
+* `Squid documentation - interception <https://wiki.squid-cache.org/SquidFaq/InterceptionProxy>`_
+* `Squid documentation - policy routing <https://wiki.squid-cache.org/ConfigExamples/Intercept/IptablesPolicyRoute>`_
+
 SSL-BUMP
 ********
 
 SSL-BUMP allows us to:
+
 * read TLS handshake information
 * intercept (*read/modify*) TLS traffic
-* check server certificates for issues (*expired, untrusted*)
 
 PEAK
 ====
@@ -128,7 +133,7 @@ This one will be used in **zero-trust** environments.
 
 * ssl-interception gives us much information that can be used to run IPS/IDS checks on
 * possible dangerous payloads like downloads can be checked by anti-virus
-* more restrictions make even interactive attacks harder to
+* more restrictions make even interactive attacks harder to go through
 
 **Drawbacks:**
 
@@ -172,6 +177,116 @@ See: `IPTables TPROXY <https://gist.github.com/superstes/c4fefbf403f61812abf8916
 Config
 ######
 
+Know-How
+========
+
+* Matching all subdomains of a Domain can be done by prepending a dot (*'wildcard' matching*)
+
+  Example: '.example.com'
+
+  You may not all 'example.com' and '.example.com' as it will result in a syntax error
+
+* You may want to exclude Port-Probes from your logs:
+
+    .. code-block:: text
+
+        acl hasRequest has request
+        access_log syslog:local2 squid hasRequest
+
+
+Baseline
+========
+
+You **need to define listeners**:
+
+See also: `Squid documentation - http_port <http://www.squid-cache.org/Doc/config/http_port/>`_
+
+.. code-block:: text
+
+     # clients =HTTP[TCP]=> SQUID =TCP=> TARGET
+     http_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS options=NO_SSLv3,SINGLE_DH_USE,SINGLE_ECDH_USE tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem
+
+     # clients =HTTPS[TCP]=> SQUID =TCP=> TARGET
+     https_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS options=NO_SSLv3,SINGLE_DH_USE,SINGLE_ECDH_USE tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem
+
+     # clients =ROUTED TCP=> SQUID =TCP=> TARGET
+     http_port 3129 intercept
+
+     # clients =TPROXY TCP=> SQUID (@127.0.0.1) =TCP=> TARGET
+     http_port 3130 tproxy
+
+
+You can define the **IPs Squid should use for outbound traffic**. This can be useful to define specific firewall rules for those addresses:
+
+.. code-block:: text
+
+    tcp_outgoing_address 192.168.10.2
+    tcp_outgoing_address 2001:db8::1:2
+
+You may want to cover at least those basic filters:
+
+* **only allow**
+
+  * specific destination ports
+
+    .. code-block:: text
+
+        acl dest_ports port 80
+        acl dest_ports port 443
+        acl dest_ports port 587
+        http_access deny !dest_ports
+
+  * only allow proxy-access **from specific source** networks
+
+    .. code-block:: text
+
+        acl src_internal src 192.168.0.0/16
+        acl src_internal src 172.16.0.0/12
+        acl src_internal src 10.0.0.0/8
+        http_access deny !src_internal
+
+  * only allow access **to specific destinations**
+
+    * filter on an IP-basis
+
+      .. code-block:: text
+
+          acl dst_internal src 192.168.0.0/16
+          acl dst_internal src 172.16.0.0/12
+          acl dst_internal src 10.0.0.0/8
+          http_access allow dst_internal
+          http_access deny all
+
+    * filter on a DNS-basis (*SSL-Bump 'Peak' needed*)
+
+      .. code-block:: text
+
+          acl domains_allowed dstdomain example.com
+          acl domains_allowed dstdomain superstes.eu
+          http_access allow domains_allowed
+          http_access deny all
+
+* **check server certificates** for issues (*expired, untrusted, weak ciphers*)
+
+  .. code-block:: text
+
+      sslproxy_cipher EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:HIGH:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS
+      acl ssl_exclude_verify dstdomain .example.com
+      sslproxy_cert_error allow ssl_exclude_verify
+      sslproxy_cert_error deny all
+
+* enable **ssl-bump 'peaking'**
+
+  .. code-block:: text
+
+      acl CONNECT method CONNECT
+      acl ssl_ports port 443
+      acl step1 at_step SslBump1
+
+      http_access deny CONNECT !ssl_ports
+      http_access allow CONNECT step1  # without 'step1' here one would be able to 'tunnel' unwanted traffic through the proxy
+      ssl_bump peek step1 ssl_ports
+      ssl_bump splice all
 
 ----
 
@@ -256,12 +371,12 @@ Practical examples of this:
 * A Cloud VPS or Root Server that is only connected to WAN
 * Distributed Systems using a central proxy (*p.e. on-site at customers*)
 
-In this case we might need other tools like :ref:`GOST <net_gost>` to act as forwarder:
+In this case we might need other tools like <placeholder> to act as forwarder:
 
 
 .. code-block:: text
 
-    gost -L red://127.0.0.1:${TPROXY_PORT} -F http://${PROXY_SERVER}:${PROXY_PORT}
+    <placeholder>
 
 
 ----
