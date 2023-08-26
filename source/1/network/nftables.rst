@@ -216,6 +216,8 @@ BTW: one can also restore IPTables rules by using 'iptables-restore < /etc/iptab
 Config
 ######
 
+`NFTables base-config example <https://wiki.superstes.eu/en/latest/_static/raw/network/nftables_base.txt>`_
+
 .. _net_nftables_tproxy:
 
 TPROXY
@@ -240,6 +242,16 @@ This can **enable powerful solutions**! Per example see: `blog.cloudflare.com - 
     TPROXY seems to only support local targets.
 
     As one can see in the kernel sources - there is a check if the target port is in use: `nft_tproxy.c <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/netfilter/nft_tproxy.c#n64>`_
+
+References
+----------
+
+* `Kernel - TPROXY <https://docs.kernel.org/networking/tproxy.html>`_
+* `PowerDNS - TPROXY <https://powerdns.org/tproxydoc/tproxy.md.html>`_
+* `Squid - TPROXY <http://wiki.squid-cache.org/Features/Tproxy4>`_
+* `Policy Routing - TPROXY <https://serverfault.com/questions/1052717/how-to-translate-ip-route-add-local-0-0-0-0-0-dev-lo-table-100-to-systemd-netw>`_
+* `NFTables source - TPROXY <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/netfilter/nft_tproxy.c>`_
+* `Kernel source - TPROXY <http://git.netfilter.org/nftables/commit/?id=2be1d52644cf77bb2634fb504a265da480c5e901>`_
 
 Usage
 -----
@@ -279,8 +291,8 @@ I personally like this solution:
 Examples
 --------
 
-* `NFTables TPROXY example <https://gist.github.com/superstes/6b7ed764482e4a8a75334f269493ac2e>`_
-* `IPTables TPROXY example <https://gist.github.com/superstes/c4fefbf403f61812abf89165d7bc4000>`_
+* `NFTables TPROXY example <https://gist.github.com/superstes/6b7ed764482e4a8a75334f269493ac2e>`_, `local NFTables TPROXY example <https://wiki.superstes.eu/en/latest/_static/raw/network/nftables_tproxy.txt>`_
+* `IPTables TPROXY example <https://gist.github.com/superstes/c4fefbf403f61812abf89165d7bc4000>`_, `local IPTables TPROXY example <https://wiki.superstes.eu/en/latest/_static/raw/network/iptables_tproxy.txt>`_
 
 ----
 
