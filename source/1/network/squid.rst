@@ -2,6 +2,8 @@
 
 .. include:: ../../_inc/head.rst
 
+.. include:: ../../_inc/in_progress.rst
+
 .. |squid_remote| image:: ../../_static/img/network/squid_remote.png
    :class: wiki-img-img
 
@@ -130,6 +132,8 @@ INTERCEPT
 =========
 
 This one will be used in **zero-trust** environments.
+
+See also: :ref:`Security Stances <net_security_approach>`
 
 **Benefits:**
 
