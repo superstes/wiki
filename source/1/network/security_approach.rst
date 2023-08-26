@@ -88,6 +88,22 @@ I will try to keep this overview of existing stances/mindsets as objective as po
 
 These are very theoretically - but I will go into how they can translate into practical usage in the `personal experience <net_security_approach_personal>` section!
 
+----
+
+Perimeter-based
+===============
+
+Classic network designs were built around the concept of an enterprise LAN consisting of switches, routers and Wi-Fi connectivity.
+
+The LAN contained one or more data centers, which housed applications and data.
+
+This LAN formed the security network perimeter.
+
+Accessing apps and services via the internet, VPNs and remote sites across WAN connections is considered external to the organization with perimeter-based security.
+
+Everything connected to the LAN is considered "trusted," and devices coming from outside the perimeter are "untrusted".
+
+This means external users must prove who they are through various security and identification tools.
 
 ----
 
@@ -95,6 +111,11 @@ Zero Trust
 ==========
 
 Reference: `NIST SP 800-207 - Zero Trust Architecture <https://csrc.nist.gov/pubs/sp/800/207/final>`_
+
+TLDR: 'Implicit trust is always a vulnerability, and therefore security must be designed with the strategy of “Never trust, always verify”'
+
+Quotes
+******
 
 I'll quote some companies that provide solutions in the Zero-Trust area:
 
@@ -105,6 +126,7 @@ I'll quote some companies that provide solutions in the Zero-Trust area:
   ..
 
     A typical enterprise’s infrastructure has grown increasingly complex. A single enterprise may operate several internal networks, remote offices with their own local infrastructure, remote and/or mobile individuals, and cloud services. This complexity has outstripped legacy methods of perimeter-based network security as there is no single, easily identified perimeter for the enterprise. Perimeter-based network security has also been shown to be insufficient since once attackers breach the perimeter, further lateral movement is unhindered.
+
     This complex enterprise has led to the development of a new model for cybersecurity known as “zero trust” (ZT). A ZT approach is primarily focused on data and service protection but can and should be expanded to include all enterprise assets (devices, infrastructure components, applications, virtual and cloud components) and subjects (end users, applications and other non-human entities that request information from resources). Throughout this document, “subject” will be used unless the section relates directly to a human end user in which “user” will be specifically used instead of the more generic “subject.” Zero trust security models assume that an attacker is present in the environment and that an enterprise-owned environment is no different—or no more trustworthy—than any nonenterprise-owned environment. In this new paradigm, an enterprise must assume no implicit trust and continually analyze and evaluate the risks to its assets and business functions and then enact protections to mitigate these risks. In zero trust, these protections usually involve minimizing access to resources (such as data and compute resources and applications/services) to only those subjects and assets identified as needing access as well as continually authenticating and authorizing the identity and security posture of each access request.
 
 * **VMWare**
@@ -123,9 +145,18 @@ I'll quote some companies that provide solutions in the Zero-Trust area:
 
       Thus, Zero Trust requires mutual authentication to confirm the identity and integrity of devices regardless of location to grant access based on the confidence of device identity, device health, and user authentication combined.
 
-To keep an overview over the configuration of all those systems one might also need to implement `infrastructure-as-code <https://www.redhat.com/en/topics/automation/what-is-infrastructure-as-code-iac>`_ to centralize it.
+* **Microsoft**
 
+  Source: `Transform to zero-trust-model <https://www.microsoft.com/en-us/security/blog/2019/10/23/perimeter-based-network-defense-transform-zero-trust-model/>`_
 
+  ..
+
+      The traditional firewall (VPN security model) assumed you could establish a strong perimeter, and then trust that activities within that perimeter were “safe.” The problem is today’s digital estates typically consist of services and endpoints managed by public cloud providers, devices owned by employees, partners, and customers, and web-enabled smart devices that the traditional perimeter-based model was never built to protect. We’ve learned from both our own experience, and the customers we’ve supported in their own journeys, that this model is too cumbersome, too expensive, and too vulnerable to keep going.
+
+      We can’t assume there are “threat free” environments. As we digitally transform our companies, we need to transform our security model to one which assumes breach, and as a result, explicitly verifies activities and automatically enforces security controls using all available signal and employs the principle of least privilege access. This model is commonly referred to as “Zero Trust.”
+
+Basically
+*********
 
 **Benefits:**
 
@@ -147,6 +178,7 @@ To keep an overview over the configuration of all those systems one might also n
 * tbc..
 
 
+To keep an overview over the configuration of all those systems one might also need to implement `infrastructure-as-code <https://www.redhat.com/en/topics/automation/what-is-infrastructure-as-code-iac>`_ to centralize it.
 
 ----
 
