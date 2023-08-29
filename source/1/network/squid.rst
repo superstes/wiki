@@ -21,9 +21,18 @@ Whenever we are referring to a 'client' - it will be a server, workstation or ne
 
 ----
 
-Source
-******
+Setup
+*****
 
+Manual
+======
+
+
+
+Docker
+======
+
+You can build a docker image as seen `in this repository <https://github.com/superstes/squid-openssl-docker>`_!
 
 
 ----
@@ -54,8 +63,10 @@ If you are only 'peaking' at SSL connections - this should be enough:
     openssl req -x509 -newkey rsa:4096 -keyout /etc/squid/ssl_bump.key -out /etc/squid/ssl_bump.crt -sha256 -days 3650 -nodes -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=Forward Proxy"
 
     # create ssl cache DB
-    mkdir -p /var/lib/squid
-    /usr/lib/squid/security_file_certgen -c -s /var/lib/squid/ssl_db -M 20MB
+    sudo mkdir -p /var/lib/squid
+    sudo rm -rf /var/lib/squid/ssl_db
+    sudo /usr/lib/squid/security_file_certgen -c -s /var/lib/squid/ssl_db -M 20MB
+    sudo chown -R proxy:proxy /var/lib/squid
 
 If you want to intercept SSL connections (*Man-in-the-middle like*) - you will have to go through some more steps: `squid docs - ssl interception <https://wiki.squid-cache.org/ConfigExamples/Intercept/SslBumpExplicit>`_
 
@@ -212,10 +223,10 @@ See also: `Squid documentation - http_port <http://www.squid-cache.org/Doc/confi
 .. code-block:: text
 
      # clients =HTTP[TCP]=> SQUID =TCP=> TARGET
-     http_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS options=NO_SSLv3,SINGLE_DH_USE,SINGLE_ECDH_USE tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem
+     http_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
      # clients =HTTPS[TCP]=> SQUID =TCP=> TARGET
-     https_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS options=NO_SSLv3,SINGLE_DH_USE,SINGLE_ECDH_USE tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem
+     https_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
      # clients =ROUTED TCP=> SQUID =TCP=> TARGET
      http_port 3129 intercept
@@ -248,6 +259,7 @@ You may want to cover at least those basic filters:
 
     .. code-block:: text
 
+        acl src_internal src 127.0.0.0/8
         acl src_internal src 192.168.0.0/16
         acl src_internal src 172.16.0.0/12
         acl src_internal src 10.0.0.0/8
@@ -278,7 +290,7 @@ You may want to cover at least those basic filters:
 
   .. code-block:: text
 
-      sslproxy_cipher EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:HIGH:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS
+      tls_outgoing_options options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS
       acl ssl_exclude_verify dstdomain .example.com
       sslproxy_cert_error allow ssl_exclude_verify
       sslproxy_cert_error deny all
@@ -286,6 +298,8 @@ You may want to cover at least those basic filters:
 * enable **ssl-bump 'peaking'**
 
   .. code-block:: text
+
+      sslcrtd_program /usr/lib/squid/security_file_certgen -s /var/lib/squid/ssl_db -M 20MB
 
       acl CONNECT method CONNECT
       acl ssl_ports port 443
@@ -334,6 +348,8 @@ Examples
 Transparent Proxy
 *****************
 
+Sometimes setting the environment-variables 'HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy' and 'https_proxy' for all applications and HTTP-clients may be problematic/too inconsistent
+
 |squid_remote|
 
 Destination NAT
@@ -381,12 +397,23 @@ Practical examples of this:
 * A Cloud VPS or Root Server that is only connected to WAN
 * Distributed Systems using a central proxy (*p.e. on-site at customers*)
 
-In this case we might need other tools like <placeholder> to act as forwarder:
+In this case we might need other tools like `proxy-forwarder <https://github.com/superstes/proxy-forwarder>`_ to act as forwarder:
 
 
 .. code-block:: text
 
-    <placeholder>
+    > curl https://superstes.eu
+    # proxy-forwarder
+    2023-08-29 20:49:10 | INFO | handler | 192.168.11.104:36386 <=> superstes.eu:443/tcp | connection established
+    # squid
+    NONE_NONE/200 0 CONNECT superstes.eu:443 - HIER_NONE/- -
+    TCP_TUNNEL/200 6178 CONNECT superstes.eu:443 - HIER_DIRECT/superstes.eu -
+
+    > curl http://superstes.eu
+    # proxy-forwarder
+    2023-08-29 20:49:07 | INFO | handler | 192.168.11.104:50808 <=> superstes.eu:80/tcp | connection established
+    # squid
+    TCP_REFRESH_MODIFIED/301 477 GET http://superstes.eu/ - HIER_DIRECT/superstes.eu text/html
 
 
 ----
@@ -467,3 +494,7 @@ Known problems
     * Increase your ssl session timeout
 
       sslproxy_session_ttl 600
+
+* **Bus error**
+
+  It seems this happens when the value of 'sslproxy_session_cache_size' is larger than the one of 'ssl_db'

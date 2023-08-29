@@ -78,6 +78,7 @@ Information is essential - it also needs to be secured.
 * Databases
 * Files
 * Backup systems
+* Applications
 
 ----
 
