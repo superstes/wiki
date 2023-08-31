@@ -18,7 +18,7 @@ Check out the `nice documentation <https://latest.gost.run/en/tutorials>`_!
 
 It can act as proxy server and client/forwarder.
 
-If you need to be able to route some traffic through ANY proxy - this is the tool for you!
+If you need to be able to route some traffic through some kind of proxy - this is the tool for you!
 
 **It can proxy:**
 
@@ -32,29 +32,34 @@ If you need to be able to route some traffic through ANY proxy - this is the too
 
 ----
 
-Forwarding
-##########
+Forwarding to HTTP Proxy
+########################
 
-Unprivileged
-************
+.. code-block:: text
 
-You can run GOST forwarders with non-root users if you add a capability to the binary:
+    # NFTables =TCP=> TPROXY (forwarder @ 127.0.0.1) =HTTP[TCP]=> PROXY (squid http_port)
 
-.. code-block:: bash
 
-    sudo setcap cap_net_admin+ep /usr/local/bin/gost
-    sudo chown root:gost /usr/local/bin/gost
-    chmod 750 /usr/local/bin/gost
+The current implementation of HTTP-forwarding in gost does not work correctly.
+
+**Problems**:
+
+* HTTP not working (*always wants to tunnel over HTTP-CONNECT*)
+* HTTPS over IPv6 not working
+
+**Solution**:
+
+I've created a patched version of gost for exactly this purpose: `proxy-forwarder <https://github.com/superstes/proxy-forwarder>`_
 
 DNAT
 ****
 
-You can use GOST to catch DNAT traffic and forward it to a remote proxy-server like squid:
+You can use it to catch DNAT traffic and forward it to a remote proxy-server like squid:
 
 .. code-block:: bash
 
-    # start listener - may be run as service
-    gost -L red://127.0.0.1:3128 -F http://${PROXY_SERVER}:${PROXY_PORT}
+    proxy-forwarder -P 4128 -F http://192.168.10.20:3128
+    # creates tcp & udp listeners for IPv4 & IPv6 on localhost:4128
 
     # NAT non-internal targets to the proxy
     ## nftables
@@ -72,11 +77,26 @@ If you want to also proxy UDP traffic - you might want to `use the TPROXY integr
 
 .. code-block:: bash
 
-    # start listener - may be run as service
-    gost -L red://127.0.0.1:3128?tproxy=true -F http://${PROXY_SERVER}:${PROXY_PORT}?so_mark=100
+    proxy-forwarder -P 4128 -F http://192.168.10.20:3128 -T
+
+    # to also set a fw-mark on processed traffic
+    proxy-forwarder -P 4128 -F http://192.168.10.20:3128 -T -M 100
 
 
 Config Examples:
 
 * `IPTables TPROXY <https://gist.github.com/superstes/c4fefbf403f61812abf89165d7bc4000>`_
 * `NFTables TPROXY <https://gist.github.com/superstes/6b7ed764482e4a8a75334f269493ac2e>`_
+
+
+Privileges
+==========
+
+You can run GOST TPROXY-mode with non-root users if you `add a capability <https://man7.org/linux/man-pages/man7/capabilities.7.html>`_ to the binary:
+
+.. code-block:: bash
+
+    sudo setcap cap_net_raw+ep /usr/local/bin/gost
+    sudo chown root:gost /usr/local/bin/gost
+    chmod 750 /usr/local/bin/gost
+
