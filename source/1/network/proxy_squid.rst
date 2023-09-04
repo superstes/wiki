@@ -11,6 +11,12 @@
 Proxy - Squid
 *************
 
+.. warning::
+
+  This application let's you intercept and modify network traffic.
+
+  That can be illegal => you are warned.
+
 ----
 
 Introduction

@@ -7,6 +7,12 @@
 Proxy Tool - GOST
 *****************
 
+.. warning::
+
+  This tool can be used to hide/forward malicious network traffic.
+
+  That can be illegal => you are warned.
+
 ----
 
 Introduction

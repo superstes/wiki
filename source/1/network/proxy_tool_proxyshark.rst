@@ -14,6 +14,8 @@ Proxy Tool - ProxyShark
 
   That can be illegal => you are warned.
 
+----
+
 Introduction
 ############
 
