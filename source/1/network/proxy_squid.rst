@@ -7,9 +7,9 @@
 .. |squid_remote| image:: ../../_static/img/network/squid_remote.png
    :class: wiki-img-img
 
-***********
-Squid Proxy
-***********
+*************
+Proxy - Squid
+*************
 
 ----
 
@@ -80,7 +80,7 @@ Modes
 HTTP_PORT
 *********
 
-The 'http_port' mode can be used as target proxy in applications like browsers.
+The :code:`http_port` mode can be used as target proxy in applications like browsers.
 
 Usual port 3128 is used for this mode.
 
@@ -91,7 +91,7 @@ DNS resolution is done by the proxy.
 HTTPS_PORT
 **********
 
-Like mode 'http_mode' but the HTTP-CONNECT tunnel is wrapped in TLS.
+Like mode :code:`http_mode` but the HTTP-CONNECT tunnel is wrapped in TLS.
 
 Usual port 3129 is used for this mode.
 
@@ -315,7 +315,7 @@ You may want to cover at least those basic filters:
 Service
 #######
 
-To keep invalid configuration from stopping/failing your `squid.service` - you can add a config-validation in it:
+To keep invalid configuration from stopping/failing your :code:`squid.service` - you can add a config-validation in it:
 
 .. code-block:: text
 
@@ -348,9 +348,9 @@ Examples
 Transparent Proxy
 *****************
 
-Sometimes setting the environment-variables 'HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy' and 'https_proxy' for all applications and HTTP-clients may be problematic/too inconsistent
+Sometimes setting the environment-variables 'HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy' and 'https_proxy' for all applications and HTTP-clients may be problematic/too inconsistent.
 
-|squid_remote|
+An attacker might also be able to modify the environmental variables once a vulnerability has been exploited.
 
 Destination NAT
 ===============
@@ -415,6 +415,8 @@ In this case we might need other tools like `proxy-forwarder <https://github.com
     # squid
     TCP_REFRESH_MODIFIED/301 477 GET http://superstes.eu/ - HIER_DIRECT/superstes.eu text/html
 
+
+|squid_remote|
 
 ----
 
@@ -481,20 +483,20 @@ Known problems
 
     * Increase your main cache:
 
-      cache_mem => 1024 MB (see `docs - cache_mem <http://www.squid-cache.org/Versions/v4/cfgman/cache_mem.html>`_)
+      :code:`cache_mem 1024 MB` (see `docs - cache_mem <http://www.squid-cache.org/Versions/v4/cfgman/cache_mem.html>`_)
 
     * Increase your session cache:
 
-      sslproxy_session_cache_size => 512 MB
+      :code:`sslproxy_session_cache_size 512 MB`
 
     * Increase your ssl cache (*only if you intercept ssl*)
 
-      ssl_db => sslcrtd_program /usr/lib/squid/security_file_certgen -s /var/lib/squid/ssl_db -M 256MB
+      ssl_db => :code:`sslcrtd_program /usr/lib/squid/security_file_certgen -s /var/lib/squid/ssl_db -M 256M`
 
     * Increase your ssl session timeout
 
-      sslproxy_session_ttl 600
+      :code:`sslproxy_session_ttl 600`
 
 * **Bus error**
 
-  It seems this happens when the value of 'sslproxy_session_cache_size' is larger than the one of 'ssl_db'
+  It seems this happens when the value of :code:`sslproxy_session_cache_size` is larger than the one of :code:`ssl_db`

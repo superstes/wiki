@@ -3,9 +3,9 @@
 .. include:: ../../_inc/head.rst
 
 
-****
-GOST
-****
+*****************
+Proxy Tool - GOST
+*****************
 
 ----
 

@@ -3,9 +3,9 @@
 .. include:: ../../_inc/head.rst
 
 
-**********
-ProxyShark
-**********
+***********************
+Proxy Tool - ProxyShark
+***********************
 
 
 .. warning::

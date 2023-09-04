@@ -13,9 +13,9 @@
 .. |nft_tproxy| image:: ../../_static/img/network/nftables_tproxy.png
    :class: wiki-img-img
 
-********
-NFTables
-********
+*******************
+Firewall - NFTables
+*******************
 
 ----
 
@@ -116,8 +116,8 @@ NFTables can be completely configured from one or more config files.
 
 Most times you might want to use:
 
-* a main config file: '/etc/nftables.conf'
-* a configuration directory to include further files: '/etc/nft.conf.d/'
+* a main config file: :code:`/etc/nftables.conf`
+* a configuration directory to include further files: :code:`/etc/nft.conf.d/`
 
 The systemd service will load the main config file by default:
 
@@ -183,12 +183,56 @@ Trace
 
 You can trace traffic that flows through you chains.
 
+See also: `NFTables documentation - trace <https://wiki.nftables.org/wiki-nftables/index.php/Ruleset_debug/tracing>`_
+
+**You need to**:
+
+* Tag traffic you want to trace by adding the :code:`meta nftrace set 1` option to a rule.
+
+* Listen to this traces by running :code:`nft monitor trace` in a separate terminal.
+
 You may want to start the trace at the point where the traffic enters.
 
-Example for output traffic:
+Example for **input traffic**:
+
+.. code-block:: nft
+
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # enable tracing for: tcp-traffic to port 1337 originating from a specific network
+        tcp dport 1337 ip saddr 192.168.10.0/24 meta nftrace set 1
+
+        ...
+
+    }
 
 
-Example for input traffic:
+Example for **output traffic**:
+
+.. code-block:: nft
+
+    chain output {
+        type filter hook output priority 0; policy drop;
+
+        # enable tracing for: http+s to a specific target
+        tcp dport { 80, 443 } ip daddr 1.1.1.1 meta nftrace set 1
+
+        ...
+
+    }
+
+Example **monitor information**:
+
+.. code-block:: bash
+
+    nft monitor trace
+    > trace id a95ea7ef ip filter trace_chain packet: iif "enp0s25" ether saddr 00:0d:b9:4a:49:3d ether daddr 3c:97:0e:39:aa:20 ip saddr 8.8.8.8 ip daddr 192.168.2.118 ip dscp cs0 ip ecn not-ect ip ttl 115 ip id 0 ip length 84 icmp type echo-reply icmp code net-unreachable icmp id 9253 icmp sequence 1 @th,64,96 24106705117628271805883024640
+    > trace id a95ea7ef ip filter trace_chain rule meta nftrace set 1 (verdict continue)
+    > trace id a95ea7ef ip filter trace_chain verdict continue
+    > trace id a95ea7ef ip filter trace_chain policy accept
+    > trace id a95ea7ef ip filter input packet: iif "enp0s25" ether saddr 00:0d:b9:4a:49:3d ether daddr 3c:97:0e:39:aa:20 ip saddr 8.8.8.8 ip daddr 192.168.2.118 ip dscp cs0 ip ecn not-ect ip ttl 115 ip id 0 ip length 84 icmp type echo-reply icmp code net-unreachable icmp id 9253 icmp sequence 1 @th,64,96 24106705117628271805883024640
+    > trace id a95ea7ef ip filter input rule ct state established,related counter packets 168 bytes 53513 accept (verdict accept)
 
 
 Translate IPTables
@@ -205,11 +249,11 @@ There are 1000x more resources related to IPTables out there that might help you
 **I would recommend:**
 
 * having a blank VM to test IPTables ruleset
-* save the working minimal-ruleset 'iptables-save > /etc/iptables/rules.ipt'
-* translate the ruleset to nftables 'iptables-restore-translate -f /etc/iptables/rules.ipt > /etc/iptables/rules.nft'
+* save the working minimal-ruleset :code:`iptables-save > /etc/iptables/rules.ipt`
+* translate the ruleset to nftables :code:`iptables-restore-translate -f /etc/iptables/rules.ipt > /etc/iptables/rules.nft`
 * test the NFTables ruleset and remove the default chains you don't need (*IPTables is a little more messy with its defaults*)
 
-BTW: one can also restore IPTables rules by using 'iptables-restore < /etc/iptables/rules.ipt'
+BTW: one can also restore IPTables rules by using :code:`iptables-restore < /etc/iptables/rules.ipt`
 
 ----
 
@@ -311,7 +355,7 @@ Examples
 Service
 #######
 
-To keep invalid configuration from stopping/failing your `nftables.service` - you can add a config-validation in it:
+To keep invalid configuration from stopping/failing your :code:`nftables.service` - you can add a config-validation in it:
 
 .. code-block:: text
 
