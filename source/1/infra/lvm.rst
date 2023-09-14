@@ -57,17 +57,17 @@ The 'lsblk' command shows you an overview of your current storage configuration.
 
 .. code-block:: bash
 
-  root@superstes:~# lsblk
-  > NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-  > sda            8:0    0   30G  0 disk
-  > |-sda1         8:1    0  487M  0 part /boot
-  > |-sda2         8:2    0    1K  0 part
-  > `-sda5         8:5    0 29.5G  0 part
-  >   |-vg0-root 254:1    0  9.7G  0 lvm  /
-  >   |-vg0-var  254:2    0  9.7G  0 lvm  /var
-  >   `-vg0-swap 254:3    0  1.9G  0 lvm  [SWAP]
-  > sdb            8:16   0  100G  0 disk
-  > `-vg1-data   254:0    0   50G  0 lvm  /mnt/data
+    root@superstes:~# lsblk
+    > NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+    > sda            8:0    0   30G  0 disk
+    > |-sda1         8:1    0  487M  0 part /boot
+    > |-sda2         8:2    0    1K  0 part
+    > `-sda5         8:5    0 29.5G  0 part
+    >   |-vg0-root 254:1    0  9.7G  0 lvm  /
+    >   |-vg0-var  254:2    0  9.7G  0 lvm  /var
+    >   `-vg0-swap 254:3    0  1.9G  0 lvm  [SWAP]
+    > sdb            8:16   0  100G  0 disk
+    > `-vg1-data   254:0    0   50G  0 lvm  /mnt/data
 
 Physical volumes
 ================
@@ -76,28 +76,28 @@ These commands show you how LVM sees your physical disks.
 
 .. code-block:: bash
 
-  root@superstes:~# pvs
-  > PV         VG  Fmt  Attr PSize    PFree
-  > /dev/sda5  vg0 lvm2 a--   <29.52g  <8.35g
-  > /dev/sdb   vg1 lvm2 a--  <100.00g <50.00g
+    root@superstes:~# pvs
+    > PV         VG  Fmt  Attr PSize    PFree
+    > /dev/sda5  vg0 lvm2 a--   <29.52g  <8.35g
+    > /dev/sdb   vg1 lvm2 a--  <100.00g <50.00g
 
-  root@superstes:~# pvdisplay
-  # prettified
-  > --- Physical volume ---
-  > PV Name               /dev/sdb
-  > VG Name               vg1
-  > PV Size               100.00 GiB / not usable 4.00 MiB
-  > Total PE              25599
-  > Free PE               12799
-  > Allocated PE          12800
-  >
-  > --- Physical volume ---
-  > PV Name               /dev/sda5
-  > VG Name               vg0
-  > PV Size               29.52 GiB / not usable 2.00 MiB
-  > Total PE              7557
-  > Free PE               2137
-  > Allocated PE          5420
+    root@superstes:~# pvdisplay
+    # prettified
+    > --- Physical volume ---
+    > PV Name               /dev/sdb
+    > VG Name               vg1
+    > PV Size               100.00 GiB / not usable 4.00 MiB
+    > Total PE              25599
+    > Free PE               12799
+    > Allocated PE          12800
+    >
+    > --- Physical volume ---
+    > PV Name               /dev/sda5
+    > VG Name               vg0
+    > PV Size               29.52 GiB / not usable 2.00 MiB
+    > Total PE              7557
+    > Free PE               2137
+    > Allocated PE          5420
 
 
 That can be useful if you resize the (*virtual*) physical disk and are not sure if LVM realized the changes.
@@ -109,34 +109,34 @@ These commands show you the existing Volume Groups.
 
 .. code-block:: bash
 
-  root@superstes:~# vgs
-  > VG  #PV #LV #SN Attr   VSize    VFree
-  > vg0   1   3   0 wz--n-  <29.52g  <8.35g
-  > vg1   1   1   0 wz--n- <100.00g <50.00g
+    root@superstes:~# vgs
+    > VG  #PV #LV #SN Attr   VSize    VFree
+    > vg0   1   3   0 wz--n-  <29.52g  <8.35g
+    > vg1   1   1   0 wz--n- <100.00g <50.00g
 
-  root@superstes:~# vgdisplay
-  # prettified
-  > --- Volume group ---
-  > VG Name               vg1
-  > VG Access             read/write
-  > VG Status             resizable
-  > MAX LV                0
-  > Cur LV                1
-  > Open LV               1
-  > Max PV                0
-  > Cur PV                1
-  > Act PV                1
-  > VG Size               <100.00 GiB
-  > Alloc PE / Size       12800 / 50.00 GiB
-  > Free  PE / Size       12799 / <50.00 GiB
-  >
-  > --- Volume group ---
-  > VG Name               vg0
-  > VG Access             read/write
-  > VG Status             resizable
-  > VG Size               <29.52 GiB
-  > Alloc PE / Size       5420 / 21.17 GiB
-  > Free  PE / Size       2137 / <8.35 GiB
+    root@superstes:~# vgdisplay
+    # prettified
+    > --- Volume group ---
+    > VG Name               vg1
+    > VG Access             read/write
+    > VG Status             resizable
+    > MAX LV                0
+    > Cur LV                1
+    > Open LV               1
+    > Max PV                0
+    > Cur PV                1
+    > Act PV                1
+    > VG Size               <100.00 GiB
+    > Alloc PE / Size       12800 / 50.00 GiB
+    > Free  PE / Size       12799 / <50.00 GiB
+    >
+    > --- Volume group ---
+    > VG Name               vg0
+    > VG Access             read/write
+    > VG Status             resizable
+    > VG Size               <29.52 GiB
+    > Alloc PE / Size       5420 / 21.17 GiB
+    > Free  PE / Size       2137 / <8.35 GiB
 
 
 Logical Volumes
@@ -243,39 +243,39 @@ Add physical volume
 
   .. code-block:: bash
 
-    lvcreate -n <NAME-OF-NEW-VOLUME> -L <SIZE-OF-NEW-VOLUME> <NAME-OF-VOLUME-GROUP>
-    #  example: lvcreate -n data -L 20G vg1
+      lvcreate -n <NAME-OF-NEW-VOLUME> -L <SIZE-OF-NEW-VOLUME> <NAME-OF-VOLUME-GROUP>
+      #  example: lvcreate -n data -L 20G vg1
 
 5. Create file-system: (*'ext4' in this case*)
 
   .. code-block:: bash
 
-    mkfs.ext4 /dev/mapper/<NAME-OF-VOLUME-GROUP>-<NAME-OF-NEW-VOLUME>
-    #  example: mkfs.ext4 /dev/mapper/vg1-data
+      mkfs.ext4 /dev/mapper/<NAME-OF-VOLUME-GROUP>-<NAME-OF-NEW-VOLUME>
+      #  example: mkfs.ext4 /dev/mapper/vg1-data
 
 6. Mount volume:
 
   .. code-block:: bash
 
-    # 1. create mount directory
-    mkdir -p /<PATH-TO-MOUNTPOINT>
-    #  example: mkdir -p /mnt/data
+      # 1. create mount directory
+      mkdir -p /<PATH-TO-MOUNTPOINT>
+      #  example: mkdir -p /mnt/data
 
-    # 2. mount permanently
-    # 2.1. edit fstab-config
-    sudo nano /etc/fstab
+      # 2. mount permanently
+      # 2.1. edit fstab-config
+      sudo nano /etc/fstab
 
-    # 2.2. append line
-    /dev/mapper/<NAME-OF-VOLUME-GROUP>-<NAME-OF-NEW-VOLUME> /<PATH-TO-MOUNTPOINT> <NAME-OF-FILESYSTEM> defaults 0 2
-    #  example: /dev/mapper/vg1-data /mnt/data ext4 defaults 0 2
+      # 2.2. append line
+      /dev/mapper/<NAME-OF-VOLUME-GROUP>-<NAME-OF-NEW-VOLUME> /<PATH-TO-MOUNTPOINT> <NAME-OF-FILESYSTEM> defaults 0 2
+      #  example: /dev/mapper/vg1-data /mnt/data ext4 defaults 0 2
 
-    # 2.3. save and exit
-    # 2.4. mount
-    sudo mount -a
+      # 2.3. save and exit
+      # 2.4. mount
+      sudo mount -a
 
-    # check if volume was mounted correctly (yes - if shown in output)
-    mount | grep "/<PATH-TO-MOUNTPOINT>"
-    #  example: mount | grep "/mnt/data"
+      # check if volume was mounted correctly (yes - if shown in output)
+      mount | grep "/<PATH-TO-MOUNTPOINT>"
+      #  example: mount | grep "/mnt/data"
 
 
 ----
@@ -319,58 +319,58 @@ We need to go through these steps:
 
     .. code-block:: bash
 
-      fdisk -l /dev/sda
-      > Device     Boot   Start      End  Sectors  Size Id Type
-      > /dev/sda1  *       2048   999423   997376  487M 83 Linux
-      > /dev/sda2       1001470 25163775 24162306 11.5G  5 Extended
-      > /dev/sda5       1001472 25163775 24162304 11.5G 8e Linux LVM
+        fdisk -l /dev/sda
+        > Device     Boot   Start      End  Sectors  Size Id Type
+        > /dev/sda1  *       2048   999423   997376  487M 83 Linux
+        > /dev/sda2       1001470 25163775 24162306 11.5G  5 Extended
+        > /dev/sda5       1001472 25163775 24162304 11.5G 8e Linux LVM
 
     In that case you will have to delete and re-add both of these partitions to extend them.
 
     .. code-block:: bash
 
-        # delete partition you want to extend
-        d
-        => number of partition
+          # delete partition you want to extend
+          d
+          => number of partition
 
-        # delete the extended partition
-        d
-        => number of partition
+          # delete the extended partition
+          d
+          => number of partition
 
-        # re-create the extended partition
-        n
-        => choose 'extended'
-        e
-        => enter or choose custom partition number
-        => enter
-        => enter
+          # re-create the extended partition
+          n
+          => choose 'extended'
+          e
+          => enter or choose custom partition number
+          => enter
+          => enter
 
-        # re-create the target partition
-        n
-        => enter
-        => enter
-        => remove the Signature?
-        n  # else your LVM config will be gone
+          # re-create the target partition
+          n
+          => enter
+          => enter
+          => remove the Signature?
+          n  # else your LVM config will be gone
 
-        # modify partition type
-        t
-        => enter partition number
-        8e  # for LVM disk
+          # modify partition type
+          t
+          => enter partition number
+          8e  # for LVM disk
 
-        # verify the layout is the same as before (except being bigger)
-        p
+          # verify the layout is the same as before (except being bigger)
+          p
 
-        # save and write
-        w
+          # save and write
+          w
 
-        # example:
-        fdisk /dev/sda
-        d ENTER 5 ENTER
-        d ENTER 2 ENTER
-        n ENTER e ENTER 2 ENTER ENTER ENTER
-        n ENTER ENTER n ENTER
-        t ENTER 5 ENTER 8e ENTER
-        w
+          # example:
+          fdisk /dev/sda
+          d ENTER 5 ENTER
+          d ENTER 2 ENTER
+          n ENTER e ENTER 2 ENTER ENTER ENTER
+          n ENTER ENTER n ENTER
+          t ENTER 5 ENTER 8e ENTER
+          w
 
 
     If that is not the case it is a little easier:
@@ -411,13 +411,13 @@ We need to go through these steps:
 
   .. code-block:: bash
 
-    pvresize /dev/sdX
+      pvresize /dev/sdX
 
 3. Extend the LVM volume group
 
   .. code-block:: bash
 
-     vgextend vg0 /dev/sdX
+       vgextend vg0 /dev/sdX
 
 4. Extend the LVM logical volume
 
