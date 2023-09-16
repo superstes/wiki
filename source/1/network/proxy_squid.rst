@@ -152,6 +152,15 @@ This one will be used in **zero-trust** environments.
 
 See also: :ref:`Security Stances <net_security_approach>`
 
+**Note**:
+
+...
+
+    Even incorrectly used TLS usually makes it possible for at least one end of the communication channel to detect the proxies existence.
+    Squid SSL-Bump is intentionally implemented in a way that allows that detection without breaking the TLS.
+    Your clients **will be capable of identifying the proxy exists**.
+    If you are looking for a way to do it in complete secrecy, dont use Squid.
+
 **Benefits:**
 
 * ssl-interception gives us much information that can be used to run IPS/IDS checks on
