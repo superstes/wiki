@@ -115,6 +115,7 @@ See also:
 * `Squid documentation - interception <https://wiki.squid-cache.org/SquidFaq/InterceptionProxy>`_
 * `Squid documentation - policy routing <https://wiki.squid-cache.org/ConfigExamples/Intercept/IptablesPolicyRoute>`_
 
+
 SSL-BUMP
 ********
 
@@ -238,17 +239,18 @@ See also: `Squid documentation - http_port <http://www.squid-cache.org/Doc/confi
 .. code-block:: text
 
      # clients =HTTP[TCP]=> SQUID =TCP=> TARGET
-     http_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
+     http_port 3128 ssl-bump tcpkeepalive=60,30,3 cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
      # clients =HTTPS[TCP]=> SQUID =TCP=> TARGET
-     https_port 3128 tcpkeepalive=60,30,3 ssl-bump cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
+     https_port 3128 ssl-bump tcpkeepalive=60,30,3 cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
      # clients =ROUTED TCP=> SQUID =TCP=> TARGET
      http_port 3129 intercept
+     https_port 3130 intercept ssl-bump tcpkeepalive=60,30,3 cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
      # clients =TPROXY TCP=> SQUID (@127.0.0.1) =TCP=> TARGET
-     http_port 3130 tproxy
-
+     http_port 3129 tproxy
+     https_port 3130 tproxy ssl-bump tcpkeepalive=60,30,3 cert=/etc/squid/ssl_bump.crt key=/etc/squid/ssl_bump.key cipher=HIGH:MEDIUM:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS tls-dh=prime256v1:/etc/squid/ssl_bump.dh.pem options=NO_SSLv3,NO_TLSv1,SINGLE_DH_USE,SINGLE_ECDH_USE
 
 You can define the **IPs Squid should use for outbound traffic**. This can be useful to define specific firewall rules for those addresses:
 
