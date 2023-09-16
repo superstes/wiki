@@ -456,6 +456,7 @@ Here are some examples that **DO NOT WORK**
       TCP_MISS/403 ORIGINAL_DST/<proxy-ip>
       ...
 
+
 * DNAT 80/443 to squid in non-transparent mode
 
   .. code-block:: bash
@@ -466,6 +467,7 @@ Here are some examples that **DO NOT WORK**
       ...
       NONE/400
       ...
+
 
 * IPTables/NFTables TPROXY to `socat forwarder <https://manpages.debian.org/unstable/socat/socat.1.en.html>`_
 
@@ -482,6 +484,16 @@ Here are some examples that **DO NOT WORK**
       ...
       TCP_MISS/403 ORIGINAL_DST/<proxy-ip>
       ...
+
+
+* Intercept/TPROXY mode with Squid inside docker container
+
+  Essentially docker seems to be NATing the traffic.
+
+  .. code-block:: bash
+
+      ERROR: NF getsockopt(ORIGINAL_DST) failed on conn18 local=192.168.0.2:3130 remote=192.168.0.1:48910 FD 12 flags=33: (2) No such file or directory
+      ERROR: NAT/TPROXY lookup failed to locate original IPs on conn18 local=192.168.0.2:3130 remote=192.168.0.1:48910 FD 12 flags=33
 
 
 Known problems
