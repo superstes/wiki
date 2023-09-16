@@ -67,13 +67,45 @@ To fix this we can:
 
       cat /etc/fstab
       > ...
-      > /dev/disk/by-id/wwn-0x5001b444a60ff504-part1                       /boot/efi vfat defaults,noatime 0 2
-      > /dev/disk/by-id/wwn-0x5001b444a60ff504-part2                       /boot     ext4 defaults 0 1
-      > /dev/disk/by-id/ata-SanDisk_X400_M.2_2280_256GB_170839425792-part1 /boot/efi vfat defaults,noatime 0 2
-      > /dev/disk/by-id/ata-SanDisk_X400_M.2_2280_256GB_170839425792-part2 /boot     ext4 defaults 0 1
+      > /dev/disk/by-id/wwn-0x5001b444a60ff504-part1                       /boot/efi  vfat defaults,noatime,nofail 0 2
+      > /dev/disk/by-id/wwn-0x5001b444a60ff504-part2                       /boot      ext4 defaults,nofail 0 1
+      > /dev/disk/by-id/ata-SanDisk_X400_M.2_2280_256GB_170839425792-part1 /boot2/efi vfat defaults,noatime,nofail 0 2
+      > /dev/disk/by-id/ata-SanDisk_X400_M.2_2280_256GB_170839425792-part2 /boot2     ext4 defaults,nofail 0 1
 
-* Add a sync job:
+* Add a sync script: (*/usr/local/sbin/grub_sync.sh*)
 
   .. code-block:: bash
 
-      # todo: add script
+      #!/bin/bash
+      set -euo pipefail
+
+      PATH_BAK='/var/backups/boot'
+      RETENTION_DAYS=30
+
+      if mount | grep "on /boot type" -q && mount | grep "on /boot2 type" -q
+      then
+        mkdir -p "$PATH_BAK"
+
+        echo '### REMOVING OLD BACKUPS of /boot2'
+        find "${PATH_BAK}/" -mtime +${RETENTION_DAYS} -name "*.tar.gz" -type f  # to show the files to be deleted
+        find "${PATH_BAK}/" -mtime +${RETENTION_DAYS} -name "*.tar.gz" -type f -delete
+
+        echo '### BACKING-UP current /boot2'
+        tar -czf "${PATH_BAK}/$(date '+%Y-%m-%d_%H-%M-%S').tar.gz" /boot2/ 2>/dev/null
+
+        echo '### SYNCING /boot to /boot2'
+        rsync -av --delete /boot/ /boot2 --exclude "lost+found"
+      else
+        echo 'Missing at least one boot-partition in mounts!'
+        exit 1
+      fi
+
+* Add sync job
+
+
+  .. code-block:: bash
+
+       crontab -e
+
+       # sync boot-partitions daily
+       0 0 * * * /bin/bash /usr/local/sbin/grub_sync.sh
