@@ -526,6 +526,20 @@ Known problems
 
       :code:`sslproxy_session_ttl 600`
 
+
 * **Bus error**
 
   It seems this happens when the value of :code:`sslproxy_session_cache_size` is larger than the one of :code:`ssl_db`
+
+
+* **NONE_NONE/409 & SECURITY ALERT: Host header forgery detected**
+
+  This error can occur whenever the squid proxy runs in :code:`intercept` mode  and resolves the target hostname to another IP than the client.
+
+  That check can help against attacks that can trick the proxy into allowing bad traffic.
+
+  As today's DNS servers use very low TTLs it might happen that some traffic triggers this check as false-positive.
+
+  You can disable this check by setting :code:`host_verify_strict off`
+
+  See also: `Squid wiki - host_verify_strict <http://www.squid-cache.org/Doc/config/host_verify_strict/>`_ & `Squid wiki - host header forgery <https://wiki.squid-cache.org/KnowledgeBase/HostHeaderForgery>`_
