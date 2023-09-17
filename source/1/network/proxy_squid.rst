@@ -540,6 +540,10 @@ Known problems
 
   As today's DNS servers use very low TTLs it might happen that some traffic triggers this check as false-positive.
 
-  You can disable this check by setting :code:`host_verify_strict off`
+  You can disable this check **for HTTP (plaintext) traffic** by setting :code:`host_verify_strict off` (*default*)
+
+  **HTTPS traffic** will still be forced fail for some unclear reason.. :(
 
   See also: `Squid wiki - host_verify_strict <http://www.squid-cache.org/Doc/config/host_verify_strict/>`_ & `Squid wiki - host header forgery <https://wiki.squid-cache.org/KnowledgeBase/HostHeaderForgery>`_
+
+  You could - of course use the `proxy-forwarder <https://github.com/superstes/proxy-forwarder>`_ to translate the intercepted TCP traffic into HTTP & HTTPS requests that you are able to send to the 'forward-proxy' port of squid. (*that one will ignore that check...*)
