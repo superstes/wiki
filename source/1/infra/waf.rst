@@ -8,7 +8,7 @@
 .. |log_time_bot_bad| image:: ../../_static/img/infra/waf_log_time_bot_bad.png
    :class: wiki-img
 
-.. |log_time_sc| image:: ../../_static/img/infra/waf_log_time_statuscode.png
+.. |log_4xx_time_sc| image:: ../../_static/img/infra/waf_log_4xx_time_statuscodes.png
    :class: wiki-img
 
 .. |log_time_path_bot| image:: ../../_static/img/infra/waf_log_time_path_bot.png
@@ -556,18 +556,17 @@ POST requests to specific path by user-agent and TLS-fingerprint.
 
 |log_path_ua_ja3|
 
-POST requests to specific path by user-agent and TLS-fingerprint.
+POST requests to specific path by user-agent, TLS-fingerprint and block.
 
 |log_path_ua_ja3_block|
 
-POST requests to specific path by user-agent, TLS-fingerprint and block.
 
 Errors & Blocks
 ===============
 
 HTTP 4xx responses over time: (*red + orange = blocks*)
 
-|log_time_sc|
+|log_4xx_time_sc|
 
 HTTP 4xx responses by source-networks:
 
@@ -586,10 +585,6 @@ Blocks by country:
 |log_blocks_country|
 
 Blocks by TLS fingerprint:
-
-|log_blocks_ja3|
-
-HTTP 4xx by TLS fingerprint:
 
 |log_blocks_ja3|
 
