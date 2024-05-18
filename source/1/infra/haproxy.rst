@@ -40,7 +40,10 @@ Trackers
 
 These track your client connections.
 
-In HAProxy community you have 3 of them available. In the enterprise edition you have 12 by default.
+By default you have 3 of them available when using the community edition. In the enterprise edition you have 12.
+
+You can increase them using the `tune.stick-counters <https://docs.haproxy.org/2.8/configuration.html#3.2-tune.stick-counters>`_ setting.
+
 
 You can track clients like so:
 
